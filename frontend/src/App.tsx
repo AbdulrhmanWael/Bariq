@@ -1,10 +1,15 @@
-import ContactUs from "./components/ContactUs";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import ShoppingCartPage from "./components/Cart/ShoppingCartPage";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   return (
-    <>
-      <ContactUs />
-    </>
+    <Router>
+      <Routes>
+        <Route path="/" element={<ShoppingCartPage />} />
+        <Route path="/contact" element={<ContactUs />} />
+      </Routes>
+    </Router>
   );
 }
 
