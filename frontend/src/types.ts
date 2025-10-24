@@ -31,3 +31,25 @@ export interface DesignCardProps {
   design: Design;
   onEdit: (id: string) => void;
 }
+
+export interface CharmSelectorProps {
+  charms: string[];
+  activeCharm: string;
+  onSelect: (charm: string) => void;
+}
+
+export interface ExpandableSectionProps {
+  title: string;
+  expanded: string | null;
+  onToggle: () => void;
+}
+
+export type CharmType = "initial" | "birthstone" | "custom" | "placeholder";
+
+export interface Charm {
+  id: string;
+  type: CharmType;
+  value?: string;
+  color?: string;
+  t: number;
+}

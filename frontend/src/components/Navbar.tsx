@@ -23,9 +23,12 @@ export default function Navbar() {
               <a href="#" className="text-gray-700 hover:text-pink-600">
                 Shop
               </a>
-              <a href="#" className="text-gray-700 hover:text-pink-600">
-                Design Custom
-              </a>
+              <Link
+                to="/custom-design"
+                className="text-gray-700 hover:text-pink-600"
+              >
+                Design Your Charm
+              </Link>
               <Link to="/contact" className="text-gray-700 hover:text-pink-600">
                 Contact
               </Link>

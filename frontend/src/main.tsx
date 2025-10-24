@@ -11,6 +11,7 @@ import Navbar from "./components/Navbar";
 import AboutPage from "./components/AboutUs";
 import WishlistPage from "./components/Wishlist";
 import PrivacyPolicyPage from "./components/PrivacyPolicy";
+import DesignYourCharm from "./components/DesignYourCharm/DesignYourCharm";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,7 @@ const router = createBrowserRouter([
       { path: "/about-us", element: <AboutPage /> },
       { path: "/wishlist", element: <WishlistPage /> },
       { path: "/privacy-policy", element: <PrivacyPolicyPage /> },
+      { path: "/custom-design", element: <DesignYourCharm /> },
     ],
   },
 ]);
