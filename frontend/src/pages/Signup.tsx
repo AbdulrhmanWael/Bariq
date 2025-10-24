@@ -6,7 +6,6 @@ const Signup = () => {
   return (
     <div className="flex flex-col">
       <Navbar />
-
     
     <div className=" flex flex-col justify-center py-12">
       
@@ -24,7 +23,7 @@ const Signup = () => {
                        Full Name
                     </label>
                     <div className="mt-1">
-                        <input id="email" name="email" type="email" autoComplete="email" required
+                        <input id="name" name="name" type="text" required
                             className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:border-pink-500 focus:outline-none sm:text-sm h-[50px]"
                             placeholder="Enter your Name"/>
                     </div>
@@ -45,7 +44,7 @@ const Signup = () => {
                     </label>
                     <div className="mt-1">
                         <input id="password" name="password" type="password" autoComplete="current-password" required
-                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none sm:text-sm h-[50px]"
+                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:border-pink-500 focus:outline-none sm:text-sm h-[50px]"
                             placeholder="Enter your password"/>
                     </div>
                 </div>
@@ -56,7 +55,7 @@ const Signup = () => {
                     </label>
                     <div className="mt-1">
                         <input id="password" name="password" type="password" autoComplete="current-password" required
-                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none sm:text-sm h-[50px]"
+                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:border-pink-500 focus:outline-none sm:text-sm h-[50px]"
                             placeholder="Confirm your password"/>
                     </div>
                 </div>
@@ -125,7 +124,7 @@ const Signup = () => {
                           Already have an account?
                         </span>
                         <span  className="p-5 text-pink-600 ">
-                            <a href="http://localhost:5177/signin"> Sign In </a>
+                            <a href="./pages/Signin"> Sign In </a>
                         </span>
                     </div>
             </div>

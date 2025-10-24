@@ -36,7 +36,7 @@ const Signin = () => {
                     </label>
                     <div className="mt-1">
                         <input id="password" name="password" type="password" autoComplete="current-password" required
-                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900  focus:outline-none sm:text-sm h-[50px]"
+                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:border-pink-500 focus:outline-none sm:text-sm h-[50px]"
                             placeholder="Enter your password"/>
                     </div>
                 </div>
@@ -105,7 +105,7 @@ const Signin = () => {
                            Don't have an account?
                         </span>
                         <span  className="p-5 text-pink-600 ">
-                            <a href="http://localhost:5177/signup"> create on </a>
+                            <a href="#"> create on </a>
                         </span>
                     </div>
             </div>
