@@ -1,10 +1,7 @@
-import React from 'react';
-import { Search, User, Heart, ShoppingCart } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Search, User, Heart, ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
 
-const Navbar: React.FC = () => {
-  const navigate = useNavigate();
-
+export default function Navbar() {
   return (
     <header className="bg-white border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -17,9 +14,12 @@ const Navbar: React.FC = () => {
               <Link to="/" className="text-gray-700 hover:text-pink-600">
                 Home
               </Link>
-              <a href="#" className="text-gray-700 hover:text-pink-600">
+              <Link
+                to="/about-us"
+                className="text-gray-700 hover:text-pink-600"
+              >
                 About Us
-              </a>
+              </Link>
               <a href="#" className="text-gray-700 hover:text-pink-600">
                 Shop
               </a>
@@ -35,29 +35,27 @@ const Navbar: React.FC = () => {
             <button className="p-2 hover:bg-gray-100 rounded-full">
               <Search size={22} />
             </button>
-            <button 
-              onClick={() => navigate('/dashboard')}
+            <Link
+              to="/user-dashboard"
               className="p-2 hover:bg-gray-100 rounded-full"
             >
               <User size={22} />
-            </button>
-            <button className="p-2 hover:bg-gray-100 rounded-full">
+            </Link>
+            <Link to="/wishlist" className="p-2 hover:bg-gray-100 rounded-full">
               <Heart size={22} />
-            </button>
-            <button 
-              onClick={() => navigate('/cart')}
+            </Link>
+            <Link
+              to="/cart"
               className="p-2 hover:bg-gray-100 rounded-full relative"
             >
               <ShoppingCart size={22} />
               <span className="absolute -top-1 -right-1 bg-pink-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                 2
               </span>
-            </button>
+            </Link>
           </div>
         </div>
       </div>
     </header>
   );
-};
-
-export default Navbar;
+}

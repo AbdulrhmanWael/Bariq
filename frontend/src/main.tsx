@@ -1,11 +1,44 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import App from './App';
-import './index.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import App from "./App";
+import UserDashboard from "./components/UserDashboard";
+import ShoppingCartPage from "./components/Cart/ShoppingCartPage";
+import ContactUs from "./components/ContactUs";
+import Footer from "./components/Footer";
+import Navbar from "./components/Navbar";
+import AboutPage from "./components/AboutUs";
+import WishlistPage from "./components/Wishlist";
+import PrivacyPolicyPage from "./components/PrivacyPolicy";
 
-ReactDOM.createRoot(document.getElementById('root')!).render(
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: (
+      <div className="min-h-screen bg-gray-50 flex flex-col">
+        <Navbar />
+        <Outlet />
+        <Footer />
+      </div>
+    ),
+    children: [
+      { path: "/", element: <App /> },
+      { path: "/user-dashboard", element: <UserDashboard /> },
+      { path: "/cart", element: <ShoppingCartPage /> },
+      { path: "/contact", element: <ContactUs /> },
+      { path: "/about-us", element: <AboutPage /> },
+      { path: "/wishlist", element: <WishlistPage /> },
+      { path: "/privacy-policy", element: <PrivacyPolicyPage /> },
+    ],
+  },
+]);
+
+const rootEl = document.getElementById("root");
+if (!rootEl) throw new Error("Root element not found");
+
+ReactDOM.createRoot(rootEl).render(
   <React.StrictMode>
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>
 );
-

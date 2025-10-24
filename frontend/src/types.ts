@@ -18,3 +18,16 @@ export interface OrderSummaryProps {
   tax: number;
   total: number;
 }
+
+export interface Design {
+  id: string;
+  name: string;
+  image: string;
+  lastEdited: string;
+  status: "Draft" | "Submitted" | "In Review";
+}
+
+export interface DesignCardProps {
+  design: Design;
+  onEdit: (id: string) => void;
+}

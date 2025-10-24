@@ -1,19 +1,27 @@
-import React from "react";
 import { CreditCard } from "lucide-react";
-import type { OrderSummaryProps } from "./types";
+import type { OrderSummaryProps } from "../../types";
 
-const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, shipping, tax, total }) => {
+export default function OrderSummary({
+  subtotal,
+  shipping,
+  tax,
+  total,
+}: Readonly<OrderSummaryProps>) {
   return (
     <div className="bg-white rounded-lg p-6 h-fit sticky top-6">
       <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
       <div className="space-y-3 mb-6">
         <div className="flex justify-between text-gray-600">
           <span>Subtotal</span>
-          <span className="font-medium text-gray-900">${subtotal.toFixed(2)}</span>
+          <span className="font-medium text-gray-900">
+            ${subtotal.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between text-gray-600">
           <span>Shipping</span>
-          <span className="font-medium text-gray-900">${shipping.toFixed(2)}</span>
+          <span className="font-medium text-gray-900">
+            ${shipping.toFixed(2)}
+          </span>
         </div>
         <div className="flex justify-between text-gray-600">
           <span>Tax</span>
@@ -36,8 +44,4 @@ const OrderSummary: React.FC<OrderSummaryProps> = ({ subtotal, shipping, tax, to
       </div>
     </div>
   );
-};
-
-export default OrderSummary;
-
-
+}
