@@ -12,6 +12,7 @@ import AboutPage from "./components/AboutUs";
 import WishlistPage from "./components/Wishlist";
 import PrivacyPolicyPage from "./components/PrivacyPolicy";
 import DesignYourCharm from "./components/DesignYourCharm/DesignYourCharm";
+import ShopCollection from "./components/Shop/ShopCollection";
 
 const router = createBrowserRouter([
   {
@@ -32,6 +33,7 @@ const router = createBrowserRouter([
       { path: "/wishlist", element: <WishlistPage /> },
       { path: "/privacy-policy", element: <PrivacyPolicyPage /> },
       { path: "/custom-design", element: <DesignYourCharm /> },
+      { path: "/shop", element: <ShopCollection /> },
     ],
   },
 ]);

@@ -20,9 +20,9 @@ export default function Navbar() {
               >
                 About Us
               </Link>
-              <a href="#" className="text-gray-700 hover:text-pink-600">
+              <Link to="/shop" className="text-gray-700 hover:text-pink-600">
                 Shop
-              </a>
+              </Link>
               <Link
                 to="/custom-design"
                 className="text-gray-700 hover:text-pink-600"
