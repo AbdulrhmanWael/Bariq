@@ -35,7 +35,7 @@ const DesignYourCharm = () => {
   return (
     <div className="w-full flex flex-col items-center">
       {/* Top Section */}
-      <section className="w-full bg-pink-100 text-center py-16 px-4">
+      <section className="w-full bg-gradient-to-r from-pink-300 to-pink-200 text-center py-16 px-4">
         <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
           Design Your Custom Charm
         </h1>

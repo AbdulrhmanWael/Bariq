@@ -7,12 +7,14 @@ import UserDashboard from "./components/UserDashboard";
 import ShoppingCartPage from "./components/Cart/ShoppingCartPage";
 import ContactUs from "./components/ContactUs";
 import Footer from "./components/Footer";
-import Navbar from "./components/Navbar";
 import AboutPage from "./components/AboutUs";
 import WishlistPage from "./components/Wishlist";
 import PrivacyPolicyPage from "./components/PrivacyPolicy";
 import DesignYourCharm from "./components/DesignYourCharm/DesignYourCharm";
 import ShopCollection from "./components/Shop/ShopCollection";
+import Signin from './pages/Signin';
+import Signup from './pages/Signup';
+import Navbar from "./components/Navbar";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +36,8 @@ const router = createBrowserRouter([
       { path: "/privacy-policy", element: <PrivacyPolicyPage /> },
       { path: "/custom-design", element: <DesignYourCharm /> },
       { path: "/shop", element: <ShopCollection /> },
+      { path:"/sign-in", element: <Signin/>},
+      { path:"/sign-up", element: <Signup/>},
     ],
   },
 ]);

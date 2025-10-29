@@ -35,20 +35,18 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
         />
 
-        {/* Quick Actions - shown on hover */}
-        <div className="absolute bottom-2 right-2 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button className="bg-white p-2 rounded-full shadow-lg hover:bg-pink-50 transition-colors">
+        {/* Quick Actions */}
+        <div className="absolute bottom-3 w-full left-1/2 -translate-x-1/2 flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button className="bg-white rounded text-gray-700 px-3 py-2 w-1/2 shadow-md hover:bg-pink-50 transition-colors text-sm font-medium">
+            View Details
+          </button>
+          <button className="bg-white p-2 rounded-full shadow-md hover:bg-pink-50 transition-colors">
             <Eye size={18} className="text-gray-700" />
           </button>
-          <button className="bg-white p-2 rounded-full shadow-lg hover:bg-pink-50 transition-colors">
+          <button className="bg-white p-2 rounded-full shadow-md hover:bg-pink-50 transition-colors">
             <Heart size={18} className="text-gray-700" />
           </button>
         </div>
-
-        {/* View Details Button */}
-        <button className="absolute bottom-2 left-2 right-2 bg-white text-gray-800 px-4 py-2 rounded-lg font-medium opacity-0 group-hover:opacity-100 transition-opacity hover:bg-gray-50 text-sm">
-          View Details
-        </button>
       </div>
 
       {/* Product Info */}
@@ -56,8 +54,11 @@ export default function ProductCard({ product }: ProductCardProps) {
         <h3 className="text-sm font-medium text-gray-800 mb-2 line-clamp-2">
           {product.name}
         </h3>
+
         <div className="flex items-center gap-2">
-          <span className="text-pink-600 font-bold">${product.price.toFixed(2)}</span>
+          <span className="text-pink-600 font-bold">
+            ${product.price.toFixed(2)}
+          </span>
           {product.originalPrice && (
             <span className="text-gray-400 text-sm line-through">
               ${product.originalPrice.toFixed(2)}
