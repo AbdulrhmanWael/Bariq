@@ -12,9 +12,10 @@ import WishlistPage from "./components/Wishlist";
 import PrivacyPolicyPage from "./components/PrivacyPolicy";
 import DesignYourCharm from "./components/DesignYourCharm/DesignYourCharm";
 import ShopCollection from "./components/Shop/ShopCollection";
-import Signin from './pages/Signin';
-import Signup from './pages/Signup';
+import Signin from "./components/Signin";
+import Signup from "./components/Signup";
 import Navbar from "./components/Navbar";
+import ProfileSettings from "./components/ProfileSettings";
 
 const router = createBrowserRouter([
   {
@@ -36,8 +37,9 @@ const router = createBrowserRouter([
       { path: "/privacy-policy", element: <PrivacyPolicyPage /> },
       { path: "/custom-design", element: <DesignYourCharm /> },
       { path: "/shop", element: <ShopCollection /> },
-      { path:"/sign-in", element: <Signin/>},
-      { path:"/sign-up", element: <Signup/>},
+      { path: "/sign-in", element: <Signin /> },
+      { path: "/sign-up", element: <Signup /> },
+      { path: "/profile-settings", element: <ProfileSettings /> },
     ],
   },
 ]);

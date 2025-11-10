@@ -1,21 +1,27 @@
-import { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { useState } from "react";
 
-interface FilterSection {
-  id: string;
-  title: string;
-  options: string[];
+interface ShopFiltersProps {
+  selectedFilters: {
+    categories: string[];
+    material: string[];
+    stone: string[];
+    priceRange: { min: number; max: number };
+  };
+  onFilterChange: (filters: ShopFiltersProps["selectedFilters"]) => void;
 }
 
-export default function ShopFilters() {
+export default function ShopFilters({
+  selectedFilters,
+  onFilterChange,
+}: Readonly<ShopFiltersProps>) {
   const [expandedSections, setExpandedSections] = useState<string[]>([
     "categories",
     "material",
     "stone",
   ]);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
 
-  const filterSections: FilterSection[] = [
+  const filterSections: { id: string; title: string; options: string[] }[] = [
     {
       id: "categories",
       title: "All Categories",
@@ -51,11 +57,28 @@ export default function ShopFilters() {
     );
   };
 
+  const handleCheckboxChange = (sectionId: string, option: string) => {
+    const updated = selectedFilters[
+      sectionId as keyof typeof selectedFilters
+    ] as string[];
+    const newSelection = updated.includes(option)
+      ? updated.filter((o) => o !== option)
+      : [...updated, option];
+
+    onFilterChange({ ...selectedFilters, [sectionId]: newSelection });
+  };
+
+  const handlePriceChange = (minOrMax: "min" | "max", value: number) => {
+    onFilterChange({
+      ...selectedFilters,
+      priceRange: { ...selectedFilters.priceRange, [minOrMax]: value },
+    });
+  };
+
   return (
     <div className="w-64 bg-white p-6 rounded-lg shadow-sm">
       <h2 className="text-xl font-bold mb-6">Filters</h2>
 
-      {/* Filter Sections */}
       {filterSections.map((section) => (
         <div key={section.id} className="mb-6 border-b border-gray-200 pb-4">
           <button
@@ -79,6 +102,12 @@ export default function ShopFilters() {
                 >
                   <input
                     type="checkbox"
+                    checked={(
+                      selectedFilters[
+                        section.id as keyof typeof selectedFilters
+                      ] as string[]
+                    ).includes(option)}
+                    onChange={() => handleCheckboxChange(section.id, option)}
                     className="mr-2 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                   />
                   {option}
@@ -89,7 +118,6 @@ export default function ShopFilters() {
         </div>
       ))}
 
-      {/* Price Range */}
       <div className="mb-6">
         <h3 className="font-semibold text-gray-800 mb-3">Price Range</h3>
         <div className="space-y-3">
@@ -97,18 +125,16 @@ export default function ShopFilters() {
             type="range"
             min="0"
             max="1000"
-            value={priceRange.max}
-            onChange={(e) =>
-              setPriceRange({ ...priceRange, max: parseInt(e.target.value) })
-            }
+            value={selectedFilters.priceRange.max}
+            onChange={(e) => handlePriceChange("max", Number.parseInt(e.target.value))}
             className="w-full accent-pink-600"
           />
           <div className="flex items-center justify-between text-sm">
             <input
               type="number"
-              value={priceRange.min}
+              value={selectedFilters.priceRange.min}
               onChange={(e) =>
-                setPriceRange({ ...priceRange, min: parseInt(e.target.value) })
+                handlePriceChange("min", Number.parseInt(e.target.value))
               }
               className="w-20 px-2 py-1 border border-gray-300 rounded text-center"
               placeholder="Min"
@@ -116,9 +142,9 @@ export default function ShopFilters() {
             <span className="text-gray-500">-</span>
             <input
               type="number"
-              value={priceRange.max}
+              value={selectedFilters.priceRange.max}
               onChange={(e) =>
-                setPriceRange({ ...priceRange, max: parseInt(e.target.value) })
+                handlePriceChange("max", Number.parseInt(e.target.value))
               }
               className="w-20 px-2 py-1 border border-gray-300 rounded text-center"
               placeholder="Max"
@@ -126,11 +152,6 @@ export default function ShopFilters() {
           </div>
         </div>
       </div>
-
-      {/* Apply Filters Button */}
-      <button className="w-full bg-pink-600 text-white py-2 rounded-lg hover:bg-pink-700 transition-colors font-medium">
-        Apply Filters
-      </button>
     </div>
   );
 }

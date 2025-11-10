@@ -1,34 +1,22 @@
-import React from "react";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "./Navbar";
+import Footer from "./Footer";
 
-const Signup = () => {
+const Signin = () => {
   return (
     <div className="flex flex-col">
       <Navbar />
-    
+
     <div className=" flex flex-col justify-center py-12">
-      
         <div className="h-[250px] bg-pink-200 flex flex-col items-center justify-center text-center px-4">
-            <p className="text-5xl font-semibold text-black mb-4">Sign Up</p>
+            <p className="text-5xl font-semibold text-black mb-4">Sign In</p>
             <p className="text-lg text-gray-900 max-w-lg">
-           Craete Your Account Now!
+            Welcome back to your account — sign in to view your saved designs and order history.
             </p>
         </div>
 
         <div className="mt-8 mx-auto w-full max-w-md ">
             <form className="space-y-6" action="#" method="POST">
                 <div>
-                    <label htmlFor="email" className="block text-md font-medium text-gray-700">
-                       Full Name
-                    </label>
-                    <div className="mt-1">
-                        <input id="name" name="name" type="text" required
-                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:border-pink-500 focus:outline-none sm:text-sm h-[50px]"
-                            placeholder="Enter your Name"/>
-                    </div>
-                </div>
-                 <div>
                     <label htmlFor="email" className="block text-md font-medium text-gray-700">
                         Email address
                     </label>
@@ -38,7 +26,8 @@ const Signup = () => {
                             placeholder="Enter your email address"/>
                     </div>
                 </div>
-                 <div>
+
+                <div>
                     <label htmlFor="password" className="block text-md font-medium text-gray-700">
                         Password
                     </label>
@@ -49,19 +38,8 @@ const Signup = () => {
                     </div>
                 </div>
 
-                <div>
-                    <label htmlFor="password" className="block text-md font-medium text-gray-700">
-                        Confirm Password
-                    </label>
-                    <div className="mt-1">
-                        <input id="password" name="password" type="password" autoComplete="current-password" required
-                            className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:border-pink-500 focus:outline-none sm:text-sm h-[50px]"
-                            placeholder="Confirm your password"/>
-                    </div>
-                </div>
 
 
-                
                 <div className="flex items-center justify-between">
                     <div className="flex items-center">
                         <input id="remember_me" name="remember_me" type="checkbox"
@@ -81,7 +59,7 @@ const Signup = () => {
                 <div>
                     <button type="submit"
                         className="group relative w-full flex items-center justify-center te py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-pink-600 hover:bg-pink-700 focus:outline-none  focus:ring-pink-500 h-[50px]">
-                        Sign Up
+                        Sign in
                     </button>
                 </div>
             </form>
@@ -116,15 +94,13 @@ const Signup = () => {
                             <i className="fa-brands fa-google"></i>
                         </a>
                     </div>
-                    
-                    
                 </div>
                     <div className=" flex justify-center text-md">
                         <span className="py-5 ">
-                          Already have an account?
+                           Don't have an account?
                         </span>
                         <span  className="p-5 text-pink-600 ">
-                            <a href="./pages/Signin"> Sign In </a>
+                            <a href="#"> create on </a>
                         </span>
                     </div>
             </div>
@@ -135,7 +111,6 @@ const Signup = () => {
     <div className="w-full space-y-5 lg:space-y-10">
         <div className="text-center text-2xl text-gray-900 ">Why Craete an Account?</div>
             <div className="grid grid-cols-1 gap-8 lg:grid-cols-3 w-full">
-    
                 <div className="flex flex-col items-center text-center space-y-4 py-12">
                     <div className="bg-pink-200 rounded-full p-6 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
@@ -180,8 +155,7 @@ const Signup = () => {
         </div>
       <Footer />
     </div>
-    
   );
 };
 
-export default Signup;
+export default Signin;

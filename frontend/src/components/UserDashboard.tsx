@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Clock, Plus } from "lucide-react";
 import type { Design, DesignCardProps } from "../types";
+import UserProfile from "./UserProfile";
 
 export function DesignCard({ design, onEdit }: Readonly<DesignCardProps>) {
   const getStatusColor = (status: string) => {
@@ -95,6 +96,7 @@ export default function UserDashboard() {
 
   return (
     <div className="max-w-7xl min-w-[1053.75px] mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <UserProfile />
       <h1 className="text-4xl font-bold mb-8">My Dashboard</h1>
 
       {/* Tabs */}
