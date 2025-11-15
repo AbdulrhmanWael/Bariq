@@ -16,6 +16,7 @@ import Signin from "./components/Signin";
 import Signup from "./components/Signup";
 import Navbar from "./components/Navbar";
 import ProfileSettings from "./components/ProfileSettings";
+import Checkout from "./components/Checkout";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,7 @@ const router = createBrowserRouter([
       { path: "/sign-in", element: <Signin /> },
       { path: "/sign-up", element: <Signup /> },
       { path: "/profile-settings", element: <ProfileSettings /> },
+      { path: "/checkout", element: <Checkout /> },
     ],
   },
 ]);

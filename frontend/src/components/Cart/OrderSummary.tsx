@@ -1,4 +1,5 @@
 import { CreditCard } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import type { OrderSummaryProps } from "../../types";
 
 export default function OrderSummary({
@@ -7,6 +8,8 @@ export default function OrderSummary({
   tax,
   total,
 }: Readonly<OrderSummaryProps>) {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-white rounded-lg p-6 h-fit sticky top-6">
       <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
@@ -34,7 +37,10 @@ export default function OrderSummary({
           <span>${total.toFixed(2)}</span>
         </div>
       </div>
-      <button className="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 rounded-lg flex items-center justify-center gap-2 transition-colors">
+      <button 
+        onClick={() => navigate('/checkout')}
+        className="w-full bg-pink-600 hover:bg-pink-700 text-white font-medium py-3 rounded-lg flex items-center justify-center gap-2 transition-colors"
+      >
         <CreditCard size={20} />
         Proceed to Checkout
       </button>

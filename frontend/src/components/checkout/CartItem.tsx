@@ -16,7 +16,7 @@ const CartItem: React.FC<CartItemProps> = ({ item }) => {
 
   return (
     <div className="flex items-start space-x-3">
-      <div className="relative flex-shrink-0">
+      <div className="relative shrink-0">
         <img
           src={item.image}
           alt={item.name}
