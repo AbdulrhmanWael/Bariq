@@ -53,3 +53,12 @@ export interface Charm {
   color?: string;
   t: number;
 }
+
+export type CharmPlacement = {
+  src: string;
+  leftPct: number;
+  topPct: number;
+} | null;
+
+export type ChainType = "NECKLACE" | "BRACELET" | "EAR RINGS";
+
