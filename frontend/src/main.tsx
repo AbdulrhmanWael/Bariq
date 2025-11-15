@@ -16,6 +16,9 @@ import Signin from "./components/Signin";
 import Signup from "./components/Signup";
 import Navbar from "./components/Navbar";
 import ProfileSettings from "./components/ProfileSettings";
+import Checkout from "./components/Checkout";
+import Confirmation from "./components/Confirmation";
+import Payment from "./components/Payment";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +43,9 @@ const router = createBrowserRouter([
       { path: "/sign-in", element: <Signin /> },
       { path: "/sign-up", element: <Signup /> },
       { path: "/profile-settings", element: <ProfileSettings /> },
+      { path: "/checkout", element: <Checkout /> },
+      { path: "/payment", element: <Payment /> },
+      { path: "/confirmation", element: <Confirmation /> },
     ],
   },
 ]);
