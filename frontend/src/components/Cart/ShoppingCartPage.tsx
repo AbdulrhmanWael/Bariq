@@ -1,65 +1,107 @@
-import { useState } from "react";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import type { CartItem } from "../../types";
 import CartItemComponent from "./CartItem";
 import OrderSummary from "./OrderSummary";
 
+interface CartItem {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image: string;
+}
+
 export default function ShoppingCartPage() {
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: "Gold Chain Pendant",
-      price: 450,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=200&h=200&fit=crop",
-    },
-    {
-      id: 2,
-      name: "Pearl Stud Earrings",
-      price: 280,
-      quantity: 2,
-      image:
-        "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=200&h=200&fit=crop",
-    },
-    {
-      id: 3,
-      name: "Silver Star Bracelet",
-      price: 175,
-      quantity: 1,
-      image:
-        "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?w=200&h=200&fit=crop",
-    },
-  ]);
 
-  const updateQuantity = (id: number, newQuantity: number): void => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Fetch cart + designs and merge them
+  useEffect(() => {
+    const loadCart = async () => {
+      try {
+        const cartRes = await fetch("http://localhost:3001/cart");
+        const cartData = await cartRes.json();
+
+        const designsRes = await fetch("http://localhost:3001/designs");
+        const designsData = await designsRes.json();
+
+        // Transform cart items
+        const merged: CartItem[] = cartData.map((item: any) => {
+          const design = designsData.find((d: any) => d.id === item.designId);
+
+          return {
+            id: item.id,
+            name: design ? `${design.chain} Custom Design` : "Custom Design",
+            price: item.price,
+            quantity: item.quantity,
+            image: design?.preview || item.preview,
+          };
+        });
+
+        setCartItems(merged);
+      } catch (err) {
+        console.error("Failed to load cart:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCart();
+  }, []);
+
+  const updateQuantity = (id: string, newQuantity: number): void => {
     if (newQuantity < 1) return;
+
     setCartItems((items) =>
       items.map((item) =>
         item.id === id ? { ...item, quantity: newQuantity } : item
       )
     );
+
+    // Update backend
+    fetch(`http://localhost:3001/cart/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ quantity: newQuantity }),
+    });
   };
 
-  const removeItem = (id: number): void => {
+  const removeItem = (id: string): void => {
     setCartItems((items) => items.filter((item) => item.id !== id));
+
+    // Remove from backend
+    fetch(`http://localhost:3001/cart/${id}`, {
+      method: "DELETE",
+    });
   };
 
   const clearCart = (): void => {
-    if (globalThis.confirm("Are you sure you want to clear your cart?")) {
-      setCartItems([]);
-    }
+    if (!confirm("Are you sure you want to clear your cart?")) return;
+
+    setCartItems([]);
+
+    // Clear backend
+    fetch("http://localhost:3001/cart", {
+      method: "DELETE",
+    });
   };
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+
   const shipping = 15;
-  const tax = 82.95;
+  const tax = 70.70;
   const total = subtotal + shipping + tax;
+
+  if (loading) {
+    return <p className="text-center py-20">Loading cart...</p>;
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -109,6 +151,7 @@ export default function ShoppingCartPage() {
                     <ChevronLeft size={20} />
                     Continue Shopping
                   </button>
+
                   <button
                     onClick={clearCart}
                     className="px-6 py-2 border border-pink-600 text-pink-600 rounded-lg hover:bg-pink-50 font-medium"
@@ -121,7 +164,6 @@ export default function ShoppingCartPage() {
           </div>
         </div>
 
-        {/* Order Summary */}
         <div className="lg:col-span-1">
           <OrderSummary
             subtotal={subtotal}

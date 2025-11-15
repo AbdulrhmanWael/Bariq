@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Input from "./checkout/Input";
 import Select from "./checkout/Select";
 import RadioCard from "./checkout/RadioCard";
@@ -20,16 +20,24 @@ interface FormData {
   shippingMethod: "standard" | "express";
 }
 
-interface OrderItem {
+interface CartType {
   id: string;
-  name: string;
-  price: number;
-  originalPrice: number;
+  type: string;
+  entityId: string;
   quantity: number;
-  image: string;
+  price: number;
+}
+
+interface DesignType {
+  id: string;
+  chain: string;
+  charms: { src: string; leftPct: number; topPct: number }[];
+  preview: string;
+  price: number;
 }
 
 const Checkout: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -45,88 +53,86 @@ const Checkout: React.FC = () => {
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [cart, setCart] = useState<CartType[]>([]);
+  const [designs, setDesigns] = useState<DesignType[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const orderItems: OrderItem[] = [
-    {
-      id: "1",
-      name: "Gold Chain Pendant",
-      price: 450.0,
-      originalPrice: 450.0,
-      quantity: 1,
-      image:
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"%3E%3Crect width="80" height="80" fill="%23f3f4f6"/%3E%3Cpath d="M40 25 L30 40 L40 55 L50 40 Z" fill="%23d4af37" stroke="%23b8941f" stroke-width="2"/%3E%3C/svg%3E',
-    },
-    {
-      id: "2",
-      name: "Pearl Stud Earrings",
-      price: 560.0,
-      originalPrice: 780.0,
-      quantity: 1,
-      image:
-        'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 80 80"%3E%3Crect width="80" height="80" fill="%23f3f4f6"/%3E%3Ccircle cx="40" cy="40" r="15" fill="%23f5f5f5" stroke="%23d1d5db" stroke-width="2"/%3E%3Ccircle cx="38" cy="38" r="3" fill="%23ffffff" opacity="0.8"/%3E%3C/svg%3E',
-    },
-  ];
+  useEffect(() => {
+    Promise.all([
+      fetch("http://localhost:3001/cart").then((res) => res.json()),
+      fetch("http://localhost:3001/designs").then((res) => res.json()),
+    ])
+      .then(([cartData, designsData]) => {
+        setCart(cartData);
+        setDesigns(designsData);
+      })
+      .finally(() => setLoading(false));
+  }, []);
 
-  const subtotal = orderItems.reduce(
+  const subtotal = cart.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const shipping = formData.shippingMethod === "standard" ? 15.0 : 25.0;
+
+  const getImage = (designId: string) => {
+    const design = designs.find((d) => d.id === designId);
+    return design ? design.preview || design.charms[0]?.src : "";
+  };
+  const shipping = formData.shippingMethod === "standard" ? 15 : 25;
   const tax = 70.7;
   const total = subtotal + shipping + tax;
 
   const handleInputChange = (name: keyof FormData, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
-    if (errors[name]) {
-      setErrors((prev) => ({ ...prev, [name]: "" }));
-    }
+    if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
   };
-  const navigate = useNavigate();
 
-  const validateForm = (): boolean => {
+  const validateForm = () => {
     const newErrors: Partial<FormData> = {};
-
-    if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.firstName.trim()) newErrors.firstName = "First name required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Last name required";
     if (!formData.streetAddress.trim())
-      newErrors.streetAddress = "Street address is required";
-    if (!formData.city.trim()) newErrors.city = "City is required";
+      newErrors.streetAddress = "Street required";
+    if (!formData.city.trim()) newErrors.city = "City required";
     if (!formData.stateProvince.trim())
-      newErrors.stateProvince = "State/Province is required";
+      newErrors.stateProvince = "State required";
     if (!formData.zipPostalCode.trim())
-      newErrors.zipPostalCode = "ZIP/Postal code is required";
-    if (!formData.phoneNumber.trim())
-      newErrors.phoneNumber = "Phone number is required";
-    if (!formData.emailAddress.trim()) {
-      newErrors.emailAddress = "Email address is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailAddress)) {
-      newErrors.emailAddress = "Invalid email address";
-    }
-
+      newErrors.zipPostalCode = "ZIP required";
+    if (!formData.phoneNumber.trim()) newErrors.phoneNumber = "Phone required";
+    if (!formData.emailAddress.trim())
+      newErrors.emailAddress = "Email required";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.emailAddress))
+      newErrors.emailAddress = "Invalid email";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log("Form submitted:", formData);
-      navigate("/payment");
-    }
+    if (!validateForm()) return;
+
+    // Save shipping info to json-server
+    await fetch("http://localhost:3001/shippingInfo", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...formData,
+        createdAt: new Date().toISOString(),
+      }),
+    });
+
+    navigate("/payment");
   };
+
+  if (loading) return <div className="text-center py-20">Loading cart...</div>;
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
-        {/* Page Title */}
         <div className="text-center mb-8">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6">
             Checkout
           </h2>
-
-          {/* Progress Steps */}
           <div className="flex justify-center items-center space-x-4 mb-8">
             <ProgressStep number={1} isActive={true} />
             <ProgressStep number={2} isActive={false} />
@@ -136,20 +142,19 @@ const Checkout: React.FC = () => {
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Column - Shipping Form */}
+            {/* Shipping Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg border border-gray-200 p-6 md:p-8">
                 <h3 className="text-xl font-semibold text-gray-900 mb-6">
                   Shipping Information
                 </h3>
-
-                {/* Name Fields */}
+                {/* Name */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <Input
                     label="First Name"
                     id="firstName"
                     value={formData.firstName}
-                    onChange={(value) => handleInputChange("firstName", value)}
+                    onChange={(v) => handleInputChange("firstName", v)}
                     error={errors.firstName}
                     required
                   />
@@ -157,53 +162,44 @@ const Checkout: React.FC = () => {
                     label="Last Name"
                     id="lastName"
                     value={formData.lastName}
-                    onChange={(value) => handleInputChange("lastName", value)}
+                    onChange={(v) => handleInputChange("lastName", v)}
                     error={errors.lastName}
                     required
                   />
                 </div>
-
-                {/* Street Address */}
-                <div className="mb-4">
-                  <Input
-                    label="Street Address"
-                    id="streetAddress"
-                    value={formData.streetAddress}
-                    onChange={(value) =>
-                      handleInputChange("streetAddress", value)
-                    }
-                    error={errors.streetAddress}
-                    required
-                  />
-                </div>
-
-                {/* Apt/Suite and City */}
+                {/* Street */}
+                <Input
+                  label="Street Address"
+                  id="streetAddress"
+                  value={formData.streetAddress}
+                  onChange={(v) => handleInputChange("streetAddress", v)}
+                  error={errors.streetAddress}
+                  required
+                />
+                {/* Apt/City */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <Input
                     label="Apt/Suite (Optional)"
                     id="aptSuite"
                     value={formData.aptSuite}
-                    onChange={(value) => handleInputChange("aptSuite", value)}
+                    onChange={(v) => handleInputChange("aptSuite", v)}
                   />
                   <Input
                     label="City"
                     id="city"
                     value={formData.city}
-                    onChange={(value) => handleInputChange("city", value)}
+                    onChange={(v) => handleInputChange("city", v)}
                     error={errors.city}
                     required
                   />
                 </div>
-
-                {/* State and ZIP */}
+                {/* State/ZIP */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                   <Input
                     label="State/Province"
                     id="stateProvince"
                     value={formData.stateProvince}
-                    onChange={(value) =>
-                      handleInputChange("stateProvince", value)
-                    }
+                    onChange={(v) => handleInputChange("stateProvince", v)}
                     error={errors.stateProvince}
                     required
                   />
@@ -211,90 +207,76 @@ const Checkout: React.FC = () => {
                     label="ZIP/Postal Code"
                     id="zipPostalCode"
                     value={formData.zipPostalCode}
-                    onChange={(value) =>
-                      handleInputChange("zipPostalCode", value)
-                    }
+                    onChange={(v) => handleInputChange("zipPostalCode", v)}
                     error={errors.zipPostalCode}
                     required
                   />
                 </div>
-
                 {/* Country */}
-                <div className="mb-4">
-                  <Select
-                    label="Country"
-                    id="country"
-                    value={formData.country}
-                    onChange={(value) => handleInputChange("country", value)}
-                    options={[
-                      { value: "Egypt", label: "Egypt" },
-                      { value: "USA", label: "United States" },
-                      { value: "UK", label: "United Kingdom" },
-                      { value: "Canada", label: "Canada" },
-                      { value: "UAE", label: "United Arab Emirates" },
-                    ]}
-                    required
-                  />
-                </div>
-
-                {/* Phone and Email */}
+                <Select
+                  label="Country"
+                  id="country"
+                  value={formData.country}
+                  onChange={(v) => handleInputChange("country", v)}
+                  options={[
+                    { value: "Egypt", label: "Egypt" },
+                    { value: "USA", label: "USA" },
+                    { value: "UK", label: "UK" },
+                    { value: "Canada", label: "Canada" },
+                    { value: "UAE", label: "UAE" },
+                  ]}
+                />
+                {/* Phone/Email */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                   <Input
-                    label="Phone Number"
+                    label="Phone"
                     id="phoneNumber"
                     type="tel"
                     value={formData.phoneNumber}
-                    onChange={(value) =>
-                      handleInputChange("phoneNumber", value)
-                    }
+                    onChange={(v) => handleInputChange("phoneNumber", v)}
                     error={errors.phoneNumber}
                     required
                   />
                   <Input
-                    label="Email Address"
+                    label="Email"
                     id="emailAddress"
                     type="email"
                     value={formData.emailAddress}
-                    onChange={(value) =>
-                      handleInputChange("emailAddress", value)
-                    }
+                    onChange={(v) => handleInputChange("emailAddress", v)}
                     error={errors.emailAddress}
                     required
                   />
                 </div>
-
-                {/* Shipping Method */}
-                <div className="border-t border-gray-200 pt-6">
+                {/* Shipping method */}
+                <div className="border-t border-gray-200 pt-6 mb-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-4">
                     Shipping Method
                   </h3>
-
                   <div className="space-y-3">
                     <RadioCard
                       id="standard"
                       name="shippingMethod"
                       value="standard"
                       checked={formData.shippingMethod === "standard"}
-                      onChange={(value) =>
+                      onChange={(v) =>
                         handleInputChange(
                           "shippingMethod",
-                          value as "standard" | "express"
+                          v as "standard" | "express"
                         )
                       }
                       title="Standard Shipping"
                       description="5-7 business days"
                       price="$15.00"
                     />
-
                     <RadioCard
                       id="express"
                       name="shippingMethod"
                       value="express"
                       checked={formData.shippingMethod === "express"}
-                      onChange={(value) =>
+                      onChange={(v) =>
                         handleInputChange(
                           "shippingMethod",
-                          value as "standard" | "express"
+                          v as "standard" | "express"
                         )
                       }
                       title="Express Shipping"
@@ -304,46 +286,47 @@ const Checkout: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Continue Button - Mobile */}
-                <div className="mt-6 lg:hidden">
-                  <button
-                    type="submit"
-                    className="w-full bg-[#E1007A] hover:bg-[#c4006a] text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center"
+                <button
+                  type="submit"
+                  className="w-full bg-[#E1007A] hover:bg-[#c4006a] text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center"
+                >
+                  Continue to Payment
+                  <svg
+                    className="w-5 h-5 ml-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                   >
-                    Continue to Payment
-                    <svg
-                      className="w-5 h-5 ml-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            {/* Right Column - Order Summary */}
+            {/* Order Summary */}
             <div className="lg:col-span-1">
               <div className="bg-gray-50 rounded-lg border border-gray-200 p-6 sticky top-4">
                 <h3 className="text-xl font-semibold text-gray-900 mb-6">
                   Order Summary
                 </h3>
-
-                {/* Cart Items */}
                 <div className="space-y-4 mb-6">
-                  {orderItems.map((item) => (
-                    <CartItem key={item.id} item={item} />
+                  {cart.map((item) => (
+                    <CartItem
+                      key={item.id}
+                      item={{
+                        ...item,
+                        name: item.entityId,
+                        originalPrice: item.price,
+                        image: getImage(item.entityId),
+                      }}
+                    />
                   ))}
                 </div>
-
-                {/* Price Breakdown */}
                 <div className="border-t border-gray-300 pt-4 space-y-3">
                   <div className="flex justify-between text-gray-700">
                     <span>Subtotal</span>
@@ -361,52 +344,6 @@ const Checkout: React.FC = () => {
                     <span>Total</span>
                     <span>${total.toFixed(2)}</span>
                   </div>
-                </div>
-
-                {/* Security Badge */}
-                <div className="mt-6 text-center">
-                  <div className="flex items-center justify-center text-gray-600 mb-2">
-                    <svg
-                      className="w-4 h-4 mr-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                    <span className="text-sm">Secure checkout</span>
-                  </div>
-                  <p className="text-xs text-gray-500">
-                    Free shipping on orders over $100
-                  </p>
-                </div>
-
-                {/* Continue Button - Desktop */}
-                <div className="hidden lg:block mt-6">
-                  <button
-                    type="submit"
-                    className="w-full bg-[#E1007A] hover:bg-[#c4006a] text-white font-semibold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center"
-                  >
-                    Continue to Payment
-                    <svg
-                      className="w-5 h-5 ml-2"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 5l7 7-7 7"
-                      />
-                    </svg>
-                  </button>
                 </div>
               </div>
             </div>

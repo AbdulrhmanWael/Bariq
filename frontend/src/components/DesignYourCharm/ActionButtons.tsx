@@ -107,7 +107,7 @@ export default function ActionButtons({
       const cartItem = {
         id: nanoid(),
         type: "custom-design",
-        designId: design.id,
+        entityId: design.id,
         preview: design.preview,
         quantity: 1,
         price: design.price,
